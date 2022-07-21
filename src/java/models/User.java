@@ -38,6 +38,9 @@ import javax.xml.bind.annotation.XmlTransient;
     , @NamedQuery(name = "User.findByPassword", query = "SELECT u FROM User u WHERE u.password = :password")})
 public class User implements Serializable {
 
+    @Column(name = "reset_password_uuid")
+    private String resetPasswordUuid;
+
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -156,6 +159,14 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return "models.User[ email=" + email + " ]";
+    }
+
+    public String getResetPasswordUuid() {
+        return resetPasswordUuid;
+    }
+
+    public void setResetPasswordUuid(String resetPasswordUuid) {
+        this.resetPasswordUuid = resetPasswordUuid;
     }
     
 }
