@@ -8,12 +8,12 @@
     </head>
     <body>
         <c:choose>
-            <c:when test="${forgotMode}">
-                <h1>Reset Password</h1>
-                <p>Please enter your email address to reset your password.</p>
+            <c:when test="${resetMode}">
+                <h1>Enter a new Password</h1>
                 <form action="reset" method="post">
-                    <input type="hidden" name="action" value="forgot">
-                    <input type="email" name="email" required>
+                    <input type="hidden" name="action" value="reset">
+                    <input type="hidden" name="uuid" value="${uuid}">
+                    <input type="password" name="password" required>
                     <br><br>
                     <input type="submit" value="Submit">
                 </form>

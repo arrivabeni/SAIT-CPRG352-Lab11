@@ -3,6 +3,7 @@ package services;
 import dataaccess.UserDB;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.UUID;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import models.User;
@@ -39,8 +40,32 @@ public class AccountService {
     }
 
     public boolean resetPassword(String email, String path, String url) {
+        UserDB userDB = new UserDB();
+        try {
+            User user = userDB.get(email);
 
-        return true;
+            // Create and sets the UUID to both User and the link
+            String uuid = UUID.randomUUID().toString();
+            user.setResetPasswordUuid(uuid);
+            userDB.update(user);
+            url += "?uuid=" + uuid;
+
+            String to = user.getEmail();
+            String subject = "NotesKeepr Password";
+            String template = path + "/emailtemplates/resetpassword.html";
+
+            HashMap<String, String> tags = new HashMap<>();
+            tags.put("firstname", user.getFirstName());
+            tags.put("lastname", user.getLastName());
+            tags.put("link", url);
+
+            GmailService.sendMail(to, subject, template, tags);
+            Logger.getLogger(AccountService.class.getName()).log(Level.INFO, "Password changing link sent to {0}", user.getEmail());
+            return true;
+        } catch (Exception ex) {
+            Logger.getLogger(AccountService.class.getName()).log(Level.SEVERE, "Error sending changing link password {0}", ex.getMessage());
+            return false;
+        }
     }
 
     public boolean changePassword(String uuid, String password) {
@@ -50,8 +75,10 @@ public class AccountService {
             user.setPassword(password);
             user.setResetPasswordUuid(null);
             userDB.update(user);
+            Logger.getLogger(AccountService.class.getName()).log(Level.INFO, "Password changed for {0}", user.getEmail());
             return true;
         } catch (Exception ex) {
+            Logger.getLogger(AccountService.class.getName()).log(Level.SEVERE, "Error changing password {0}", ex.getMessage());
             return false;
         }
     }
