@@ -11,8 +11,10 @@
             <c:when test="${resetMode}">
                 <h1>Enter a new Password</h1>
                 <form action="reset" method="post">
-                    <input type="hidden" name="action" value="reset"><br>
-                    <input type="password" name="password" required><br>
+                    <input type="hidden" name="action" value="reset">
+                    <input type="hidden" name="uuid" value="${uuid}">
+                    <input type="password" name="password" required>
+                    <br><br>
                     <input type="submit" value="Submit">
                 </form>
             </c:when>

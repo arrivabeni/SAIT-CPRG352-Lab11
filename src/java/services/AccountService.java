@@ -25,12 +25,11 @@ public class AccountService {
                 tags.put("firstname", user.getFirstName());
                 tags.put("lastname", user.getLastName());
                 tags.put("date", (new java.util.Date()).toString());
-                
+
                 GmailService.sendMail(to, subject, template, tags);
-                
+
                 // Send basic email
                 // GmailService.sendMail(to, subject, "New login to notes app!", false);
-
                 return user;
             }
         } catch (Exception e) {
@@ -38,4 +37,23 @@ public class AccountService {
 
         return null;
     }
+
+    public boolean resetPassword(String email, String path, String url) {
+
+        return true;
+    }
+
+    public boolean changePassword(String uuid, String password) {
+        UserDB userDB = new UserDB();
+        try {
+            User user = userDB.getByUUID(uuid);
+            user.setPassword(password);
+            user.setResetPasswordUuid(null);
+            userDB.update(user);
+            return true;
+        } catch (Exception ex) {
+            return false;
+        }
+    }
+
 }

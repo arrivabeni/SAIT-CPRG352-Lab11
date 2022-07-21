@@ -5,6 +5,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import services.AccountService;
 
 public class ResetPasswordServlet extends HttpServlet {
 
@@ -17,16 +18,17 @@ public class ResetPasswordServlet extends HttpServlet {
             request.setAttribute("forgotMode", true);
         } else {
             request.setAttribute("resetMode", true);
+            request.setAttribute("uuid", uuid);
         }
 
         getServletContext().getRequestDispatcher("/WEB-INF/reset.jsp").forward(request, response);
         return;
     }
 
-    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
+        AccountService as = new AccountService();
         String action = request.getParameter("action");
         String message = "";
 
@@ -34,6 +36,9 @@ public class ResetPasswordServlet extends HttpServlet {
             case "reset":
                 String uuid = request.getParameter("uuid");
                 String password = request.getParameter("password");
+                
+                as.changePassword(uuid, password);
+                
                 message = "Your password has been successfully updated.";
                 break;
             case "forgot":
